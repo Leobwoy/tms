@@ -1,0 +1,80 @@
+<!-- app/templates/carriers.html -->
+{% extends "base.html" %}
+{% block content %}
+<h2>Carriers</h2>
+
+<div class="mb-3">
+  <a href="{{ url_for('routes.add_carrier') }}" class="btn btn-success">Add Carrier</a>
+</div>
+
+{% if carriers %}
+  <ul class="list-group">
+    {% for carrier in carriers %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <strong>{{ carrier.name }}</strong> - Cost Factor: {{ carrier.cost_factor }}
+        </div>
+        {% if current_user.is_authenticated and current_user.role == 'admin' %}
+          <div>
+            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#carrierDetailsModal"
+                    data-carrier-id="{{ carrier.id }}"
+                    data-carrier-name="{{ carrier.name }}"
+                    data-cost-factor="{{ carrier.cost_factor }}">
+              View Details
+            </button>
+            <a href="{{ url_for('routes.edit_carrier', carrier_id=carrier.id) }}" class="btn btn-sm btn-warning">Edit</a>
+            <form action="{{ url_for('routes.delete_carrier', carrier_id=carrier.id) }}" method="post" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this carrier?');">Delete</button>
+            </form>
+          </div>
+        {% else %}
+          <!-- For non-admins, only show the view details button -->
+          <div>
+            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#carrierDetailsModal"
+                    data-carrier-id="{{ carrier.id }}"
+                    data-carrier-name="{{ carrier.name }}"
+                    data-cost-factor="{{ carrier.cost_factor }}">
+              View Details
+            </button>
+          </div>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No carriers found.</p>
+{% endif %}
+
+<!-- Carrier Details Modal (same as before) -->
+<div class="modal fade" id="carrierDetailsModal" tabindex="-1" aria-labelledby="carrierDetailsLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="carrierDetailsLabel">Carrier Details</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>ID:</strong> <span id="modalCarrierId"></span></p>
+        <p><strong>Name:</strong> <span id="modalCarrierName"></span></p>
+        <p><strong>Cost Factor:</strong> <span id="modalCostFactor"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var carrierDetailsModal = document.getElementById('carrierDetailsModal');
+  carrierDetailsModal.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget;
+    var carrierId = button.getAttribute('data-carrier-id');
+    var carrierName = button.getAttribute('data-carrier-name');
+    var costFactor = button.getAttribute('data-cost-factor');
+    carrierDetailsModal.querySelector('#modalCarrierId').textContent = carrierId;
+    carrierDetailsModal.querySelector('#modalCarrierName').textContent = carrierName;
+    carrierDetailsModal.querySelector('#modalCostFactor').textContent = costFactor;
+  });
+</script>
+{% endblock %}

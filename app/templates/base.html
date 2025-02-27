@@ -1,0 +1,92 @@
+<!-- app/templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TMS App</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <style>
+      /* Ensure html and body take full height */
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+      /* Set up a flex container for the body */
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+      /* The main wrapper grows to fill available space */
+      .wrapper {
+        flex: 1;
+      }
+      /* Footer styling */
+      .footer {
+        background-color: #343a40;
+        color: white;
+        padding: 1rem 0;
+        text-align: center;
+      }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <!-- The brand always shows -->
+                 {% if current_user.is_authenticated %}
+            <a class="navbar-brand" href="{{ url_for('routes.index') }}">TMS App</a>
+        {% else %}
+            <a class="navbar-brand" href="{{ url_for('routes.home') }}">TMS App</a>
+        {% endif %}
+        <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('routes.index') }}">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('routes.carriers') }}">Carriers</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('routes.shipments') }}">Shipments</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('routes.optimize') }}">Optimize</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('routes.track_shipments') }}">Status</a></li>
+                        {% if current_user.role == 'admin' %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('routes.activity_logs') }}">Activity Log</a></li>
+                        {% endif %}
+
+                        <!-- Logout link available for all logged in users -->
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('routes.logout') }}">Logout</a></li>
+
+                       <!-- {% if current_user.is_authenticated and current_user.role != 'admin' %}
+                        <form action="{{ url_for('routes.promote_to_admin') }}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-warning">Promote to Admin</button>
+                        </form>
+                      {% endif %} -->
+                      
+
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 bg-dark text-white">
+      <div class="container text-center">
+          <span>&copy; 2025 TMS App by Leo. All rights reserved.</span>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+Flask==2.2.2
+Flask-SQLAlchemy==3.0.2
+Flask-Migrate==4.0.4
+Flask-Login==0.6.2
+Werkzeug==2.2.2
+Flask-Mail==0.9.1
+twilio==7.18.0

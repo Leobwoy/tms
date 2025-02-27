@@ -1,0 +1,41 @@
+<!-- app/templates/index.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+  <h1 class="mt-4">Welcome to the TMS App</h1>
+  <p>Quick overview of your system:</p>
+  
+  <!-- Dashboard Stats Section -->
+  <div class="row">
+    <!-- Total Shipments Card -->
+    <div class="col-md-4">
+      <div class="card text-white bg-primary mb-3">
+        <div class="card-header">Total Shipments</div>
+        <div class="card-body">
+          <h5 class="card-title">{{ shipment_count }}</h5>
+        </div>
+      </div>
+    </div>
+    <!-- Total Carriers Card -->
+    <div class="col-md-4">
+      <div class="card text-white bg-success mb-3">
+        <div class="card-header">Total Carriers</div>
+        <div class="card-body">
+          <h5 class="card-title">{{ carrier_count }}</h5>
+        </div>
+      </div>
+    </div>
+    <!-- Average Cost Factor Card -->
+    <div class="col-md-4">
+      <div class="card text-white bg-info mb-3">
+        <div class="card-header">Avg Cost Factor</div>
+        <div class="card-body">
+          <h5 class="card-title">{{ avg_cost_factor|round(2) }}</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Optionally, include links or additional information below -->
+</div>
+{% endblock %}

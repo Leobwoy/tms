@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to TMS</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: white;
+            color: #4facfe;
+            padding: 12px 20px;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s;
+        }
+        .btn:hover {
+            background: #4facfe;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Welcome to TMS</h1>
+        <p>Your trusted transportation management system. Organize, track, and optimize your shipments seamlessly.</p>
+        <a href="{{ url_for('routes.register') }}" class="btn">Get Started</a>
+        <a href="{{ url_for('routes.login') }}" class="btn">Login</a>
+    </div>
+
+</body>
+</html>

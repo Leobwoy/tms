@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Add Shipment</h2>
+<form method="post">
+    <div class="mb-3">
+        <label for="origin" class="form-label">Origin</label>
+        <input type="text" class="form-control" id="origin" name="origin" required>
+    </div>
+    <div class="mb-3">
+        <label for="destination" class="form-label">Destination</label>
+        <input type="text" class="form-control" id="destination" name="destination" required>
+    </div>
+    <div class="mb-3">
+        <label for="weight" class="form-label">Weight (Tons)</label>
+        <input type="number" step="any" class="form-control" id="weight" name="weight" required>
+    </div>
+    <div class="mb-3">
+        <label for="carrier_id" class="form-label">Carrier</label>
+        <select class="form-select" id="carrier_id" name="carrier_id" required>
+            {% for carrier in carriers %}
+                <option value="{{ carrier.id }}">{{ carrier.name }} (Cost Factor: {{ carrier.cost_factor }})</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="status" class="form-label">Status</label>
+        <select class="form-select" id="status" name="status">
+            <option value="Pending" selected>Pending</option>
+            <option value="In Transit">In Transit</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Cancelled">Cancelled</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Shipment</button>
+</form>
+{% endblock %}

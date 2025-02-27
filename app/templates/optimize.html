@@ -1,0 +1,46 @@
+<!-- app/templates/optimize.html -->
+{% extends "base.html" %}
+{% block content %}
+<h2>Advanced Carrier Optimization</h2>
+
+<!-- Optimization Form -->
+<form method="post" action="{{ url_for('routes.optimize') }}" class="mb-4">
+    <div class="mb-3">
+        <label for="weight" class="form-label">Weight Factor (multiplier for cost factor):</label>
+        <input type="number" step="any" class="form-control" id="weight" name="weight" value="{{ weight }}">
+        <div class="form-text">Adjust the weight factor to influence the optimization.</div>
+    </div>
+    <button type="submit" class="btn btn-primary">Optimize</button>
+</form>
+
+{% if best_carrier %}
+  <div class="alert alert-success">
+      <h4 class="alert-heading">Recommended Carrier:</h4>
+      <p><strong>{{ best_carrier.name }}</strong> with a cost factor of {{ best_carrier.cost_factor }}.</p>
+  </div>
+{% endif %}
+
+{% if sorted_carriers %}
+  <h3>Carrier Scores Breakdown</h3>
+  <table class="table table-bordered">
+      <thead>
+          <tr>
+              <th>Carrier ID</th>
+              <th>Name</th>
+              <th>Cost Factor</th>
+              <th>Computed Score (Cost Factor × Weight)</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for entry in sorted_carriers %}
+          <tr {% if loop.first %}class="table-success"{% endif %}>
+              <td>{{ entry.carrier.id }}</td>
+              <td>{{ entry.carrier.name }}</td>
+              <td>{{ entry.carrier.cost_factor }}</td>
+              <td>{{ entry.score|round(2) }}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+{% endif %}
+{% endblock %}

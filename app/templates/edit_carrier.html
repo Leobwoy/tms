@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Edit Carrier</h2>
+<form method="post">
+    <div class="mb-3">
+        <label for="name" class="form-label">Carrier Name</label>
+        <input type="text" class="form-control" id="name" name="name" value="{{ carrier.name }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="cost_factor" class="form-label">Cost Factor</label>
+        <input type="number" step="any" class="form-control" id="cost_factor" name="cost_factor" value="{{ carrier.cost_factor }}" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Carrier</button>
+</form>
+{% endblock %}
