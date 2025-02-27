@@ -20,13 +20,13 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     login.init_app(app)
     
-    from app.routes import bp as routes_bp
+    from app.tms.routes import bp as routes_bp
     app.register_blueprint(routes_bp)
     
     return app
 
 # User loader function for Flask-Login
-from app.models import User
+from app.tms.models import User
 @login.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))

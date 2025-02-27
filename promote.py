@@ -1,5 +1,5 @@
 from app import db
-from app.models import User
+from app.tms.models import User
 
 username = input("Enter the username to promote to admin: ")
 

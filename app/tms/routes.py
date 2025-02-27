@@ -4,10 +4,10 @@ import io
 from werkzeug.utils import secure_filename
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from app import db
-from app.models import User, Carrier, Shipment, ActivityLog
+from app.tms.models import User, Carrier, Shipment, ActivityLog
 from flask_login import login_user, logout_user, current_user, login_required
 from flask import Response
-from app.notifications import send_email, send_sms
+from app.tms.notifications import send_email, send_sms
 
 bp = Blueprint('routes', __name__)
 

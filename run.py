@@ -1,6 +1,6 @@
 # run.py
 from app import create_app, db
-from app.models import Carrier
+from app.tms.models import Carrier
 
 app = create_app()
 
