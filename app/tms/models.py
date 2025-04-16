@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
 class User(UserMixin, db.Model):
+    __tablename__= "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, index=True, nullable=False)
     email = db.Column(db.String(120), unique=True, index=True, nullable=False)
@@ -19,7 +20,9 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return f'<User {self.username}>'
+    
 class Carrier(db.Model):
+    __tablename__= "carriers"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
     cost_factor = db.Column(db.Float, default=1.0)  # Lower is better for optimization
@@ -28,6 +31,7 @@ class Carrier(db.Model):
         return f'<Carrier {self.name}>'
 
 class Shipment(db.Model):
+    __tablename__= "shipments"
     id = db.Column(db.Integer, primary_key=True)
     origin = db.Column(db.String(128))
     destination = db.Column(db.String(128))
@@ -39,6 +43,7 @@ class Shipment(db.Model):
         return f'<Shipment {self.id} from {self.origin} to {self.destination}>'
 
 class ActivityLog(db.Model):
+    __tablename__= "activity_logs"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # Who performed the action
     action = db.Column(db.String(64))   # e.g., 'create', 'update', 'delete'

@@ -8,8 +8,9 @@ from app.tms.models import User, Carrier, Shipment, ActivityLog
 from flask_login import login_user, logout_user, current_user, login_required
 from flask import Response
 from app.tms.notifications import send_email, send_sms
+from app.fleet.models import Vehicle, Driver
 
-bp = Blueprint('routes', __name__)
+tms_bp = Blueprint('tms', __name__, url_prefix='/tms')
 
 # In app/routes.py (or app/utils.py)
 def log_activity(user, action, model, model_id, description=''):
@@ -28,13 +29,13 @@ def allowed_file(filename):
     return True    
 
 # Landing page: shows welcome and login/register links if not authenticated.
-@bp.route('/')
+@tms_bp.route('/')
 def home():
     if current_user.is_authenticated:
         return redirect(url_for('routes.index'))
     return render_template('landing.html')
 
-@bp.route('/index')
+@tms_bp.route('/index')
 def index():
     # Get statistics for the dashboard
     shipment_count = Shipment.query.count()
@@ -49,7 +50,7 @@ def index():
     )
 
 # Registration Route
-@bp.route('/register', methods=['GET', 'POST'])
+@tms_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('routes.index'))
@@ -81,7 +82,7 @@ def register():
     return render_template('register.html')
 
 # Login Route
-@bp.route('/login', methods=['GET', 'POST'])
+@tms_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('routes.index'))
@@ -98,7 +99,7 @@ def login():
     return render_template('login.html')
 
 # Logout Route
-@bp.route('/logout')
+@tms_bp.route('/logout')
 @login_required
 def logout():
     logout_user()
@@ -106,14 +107,14 @@ def logout():
     return redirect(url_for('routes.index'))
 
 #Carriers Route
-@bp.route('/carriers')
+@tms_bp.route('/carriers')
 @login_required
 def carriers():
     carriers = Carrier.query.all()
     return render_template('carriers.html', carriers=carriers)
 
 #Shipments Route
-@bp.route('/shipments')
+@tms_bp.route('/shipments')
 @login_required
 def shipments():
     # Get the current page number, search query, and sorting parameters from the URL
@@ -147,7 +148,7 @@ def shipments():
     )
 
 #Optimize Route
-@bp.route('/optimize', methods=['GET', 'POST'])
+@tms_bp.route('/optimize', methods=['GET', 'POST'])
 @login_required
 def optimize():
     # Default weight multiplier is 1.0
@@ -180,7 +181,7 @@ def optimize():
     )
 
 #Add_Shipment Route
-@bp.route('/add_shipment', methods=['GET', 'POST'])
+@tms_bp.route('/add_shipment', methods=['GET', 'POST'])
 @login_required
 def add_shipment():
      # Only allow admins to add shipments
@@ -195,6 +196,8 @@ def add_shipment():
         status = request.form.get('status', 'Pending')  # Get the status
         if not (origin and destination and weight and carrier_id):
             flash("All fields are required.", "error")
+            available_vehicles = Vehicle.query.filter_by(status='available').all()
+    
             return redirect(url_for('routes.add_shipment'))
         new_shipment = Shipment(origin=origin, destination=destination, weight=weight,
                                 carrier_id=carrier_id, status=status)
@@ -211,7 +214,7 @@ def add_shipment():
     return render_template('add_shipment.html', carriers=carriers)
 
 #Add_Carrier Route
-@bp.route('/add_carrier', methods=['GET', 'POST'])
+@tms_bp.route('/add_carrier', methods=['GET', 'POST'])
 @login_required
 def add_carrier():
     if current_user.role != 'admin':
@@ -238,7 +241,7 @@ def add_carrier():
     return render_template('add_carrier.html')
 
 #Edit_Carrier Route
-@bp.route('/edit_carrier/<int:carrier_id>', methods=['GET', 'POST'])
+@tms_bp.route('/edit_carrier/<int:carrier_id>', methods=['GET', 'POST'])
 @login_required
 def edit_carrier(carrier_id):
     if current_user.role != 'admin':
@@ -267,7 +270,7 @@ def edit_carrier(carrier_id):
 
 
 #Delete_Carrier Route
-@bp.route('/delete_carrier/<int:carrier_id>', methods=['POST'])
+@tms_bp.route('/delete_carrier/<int:carrier_id>', methods=['POST'])
 @login_required
 def delete_carrier(carrier_id):
     if current_user.role != 'admin':
@@ -288,7 +291,7 @@ def delete_carrier(carrier_id):
 
 
 #Edit Shipment Route
-@bp.route('/edit_shipment/<int:shipment_id>', methods=['GET', 'POST'])
+@tms_bp.route('/edit_shipment/<int:shipment_id>', methods=['GET', 'POST'])
 @login_required
 def edit_shipment(shipment_id):
     if current_user.role != 'admin':
@@ -338,7 +341,7 @@ def edit_shipment(shipment_id):
     return render_template('edit_shipment.html', shipment=shipment, carriers=carriers)
 
 #Delete_Shipment Route
-@bp.route('/delete_shipment/<int:shipment_id>', methods=['POST'])
+@tms_bp.route('/delete_shipment/<int:shipment_id>', methods=['POST'])
 @login_required
 def delete_shipment(shipment_id):
     if current_user.role != 'admin':
@@ -359,7 +362,7 @@ def delete_shipment(shipment_id):
     return redirect(url_for('routes.shipments'))
 
 
-@bp.route('/export_shipments')
+@tms_bp.route('/export_shipments')
 @login_required
 def export_shipments():
     # Query all shipments
@@ -386,7 +389,7 @@ def export_shipments():
         headers={"Content-Disposition": "attachment;filename=shipments.csv"}
     )
 
-@bp.route('/track_shipments')
+@tms_bp.route('/track_shipments')
 @login_required
 def track_shipments():
     # Optional: Allow filtering by status via query parameter
@@ -397,7 +400,7 @@ def track_shipments():
         shipments = Shipment.query.all()
     return render_template('track_shipments.html', shipments=shipments, status_filter=status_filter)
 
-@bp.route('/activity_logs')
+@tms_bp.route('/activity_logs')
 @login_required
 def activity_logs():
     if current_user.role != 'admin':
@@ -408,7 +411,7 @@ def activity_logs():
 
 
 #Upload_Shipment Route
-@bp.route('/upload_shipments', methods=['GET', 'POST'])
+@tms_bp.route('/upload_shipments', methods=['GET', 'POST'])
 @login_required
 def upload_shipments():
     if current_user.role != 'admin':
@@ -486,7 +489,7 @@ def upload_shipments():
     return render_template('bulk_upload.html')
 
 #Admin Promotion Route
-@bp.route('/promote_to_admin', methods=['GET','POST'])
+@tms_bp.route('/promote_to_admin', methods=['GET','POST'])
 @login_required
 def promote_to_admin():
     # Only allow promotion if the current user is not already an admin

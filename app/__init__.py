@@ -9,7 +9,7 @@ from flask_mail import Mail
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
-login.login_view = 'routes.login'  # Redirect unauthorized users to login
+login.login_view = 'tms.login'  # Redirect unauthorized users to login
 mail = Mail()
 
 def create_app(config_class=Config):
@@ -20,9 +20,14 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     login.init_app(app)
     
-    from app.tms.routes import bp as routes_bp
-    app.register_blueprint(routes_bp)
-    
+    # Register the TMS module blueprint
+    from app.tms.routes import tms_bp
+    app.register_blueprint(tms_bp, url_prefix='/tms')
+
+    # Register the Fleet module blueprint
+    from app.fleet.routes import fleet_bp
+    app.register_blueprint(fleet_bp, url_prefix='/fleet')
+
     return app
 
 # User loader function for Flask-Login

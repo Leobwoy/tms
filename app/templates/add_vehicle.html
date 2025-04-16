@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Add Vehicle</h1>
+  <form method="POST">
+    <div class="mb-3">
+      <label for="license_plate">License Plate</label>
+      <input type="text" name="license_plate" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="make">Make</label>
+      <input type="text" name="make" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label for="model">Model</label>
+      <input type="text" name="model" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label for="year">Year</label>
+      <input type="number" name="year" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label for="capacity">Capacity</label>
+      <input type="number" step="any" name="capacity" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label for="status">Status</label>
+      <input type="text" name="status" class="form-control" value="available">
+    </div>
+    <button type="submit" class="btn btn-success">Add Vehicle</button>
+  </form>
+{% endblock %}
